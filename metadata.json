@@ -1,0 +1,5 @@
+{
+  "name": "Top Fund Managers",
+  "description": "Real-time data query tool for top mutual fund managers with >=10 years tenure and >=15% annualized return.",
+  "requestFramePermissions": []
+}
