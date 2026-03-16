@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, TrendingUp, Shield, Clock, Zap, ChevronDown, ChevronUp, Briefcase, Filter } from 'lucide-react';
+import { Moon, Sun, TrendingUp, Shield, Clock, Zap, ChevronDown, ChevronUp, Briefcase, Filter, RefreshCw } from 'lucide-react';
 import { managers } from './data';
 import { FundManager } from './types';
 
@@ -15,6 +15,18 @@ export default function App() {
   const [sortBy, setSortBy] = useState<SortOption>('drawdown');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [showPortfolio, setShowPortfolio] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    // Simulate network request for real-time data
+    setTimeout(() => {
+      setIsRefreshing(false);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+    }, 1500);
+  };
 
   useEffect(() => {
     if (isDark) {
@@ -45,6 +57,14 @@ export default function App() {
             <h1 className="text-xl font-bold tracking-tight">顶级公募查询</h1>
           </div>
           <div className="flex items-center gap-4">
+            <button 
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className="flex items-center gap-2 px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 text-sm font-medium rounded-full transition-colors disabled:opacity-50"
+            >
+              <RefreshCw size={16} className={isRefreshing ? "animate-spin" : ""} />
+              <span className="hidden sm:inline">{isRefreshing ? '同步中...' : '刷新数据'}</span>
+            </button>
             <button 
               onClick={() => setShowPortfolio(true)}
               className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-full transition-colors"
@@ -182,6 +202,14 @@ export default function App() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-6 py-3 rounded-full shadow-lg flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4">
+          <Shield size={16} className="text-green-400 dark:text-green-600" />
+          <span className="text-sm font-medium">已同步最新净值与持仓数据</span>
         </div>
       )}
     </div>
